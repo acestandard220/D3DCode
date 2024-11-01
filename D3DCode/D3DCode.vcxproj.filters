@@ -30,6 +30,12 @@
     <ClInclude Include="Core\headers\ColorShaderClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\headers\ModelClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\headers\CameraClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\src\SystemClass.cpp">
@@ -50,8 +56,15 @@
     <ClCompile Include="Core\src\ColorShaderClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\src\ModelClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\src\CameraClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Core\Shaders\color.vs" />
+    <None Include="Core\src\color.vs" />
+    <None Include="Core\src\color.ps" />
   </ItemGroup>
 </Project>

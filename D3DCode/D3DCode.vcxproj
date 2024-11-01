@@ -20,21 +20,26 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\headers\ApplicationClass.h" />
+    <ClInclude Include="Core\headers\CameraClass.h" />
     <ClInclude Include="Core\headers\ColorShaderClass.h" />
     <ClInclude Include="Core\headers\D3DClass.h" />
     <ClInclude Include="Core\headers\InputClass.h" />
+    <ClInclude Include="Core\headers\ModelClass.h" />
     <ClInclude Include="Core\headers\SystemClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\src\ApplicationClass.cpp" />
+    <ClCompile Include="Core\src\CameraClass.cpp" />
     <ClCompile Include="Core\src\ColorShaderClass.cpp" />
     <ClCompile Include="Core\src\D3DClass.cpp" />
+    <ClCompile Include="Core\src\ModelClass.cpp" />
     <ClCompile Include="DXCode.cpp" />
     <ClCompile Include="Core\src\InputClass.cpp" />
     <ClCompile Include="Core\src\SystemClass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Core\Shaders\color.vs" />
+    <None Include="Core\src\color.ps" />
+    <None Include="Core\src\color.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

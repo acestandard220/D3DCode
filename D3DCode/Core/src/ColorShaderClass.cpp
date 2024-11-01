@@ -26,10 +26,20 @@ bool ColorShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	//Getting the shader source file paths
 	wchar_t vsFilename[128];
 	wchar_t psFilename[128];
+	int err;
+	err = wcscpy_s(vsFilename, 128, L"color.vs");
 
-	wcscpy_s(vsFilename, 128, L"../Shaders/color.vs");
-	wcscpy_s(psFilename, 128, L"../Shaders/color.ps");
-
+	if (err != 0)
+	{
+		std::cout << "File path copy failed\n";
+		return false;
+	}
+	err = wcscpy_s(psFilename, 128, L"color.ps");
+	if (err != 0)
+	{
+		std::cout << "File path cop failed 2\n";
+		return false;
+	}
 	//Passing the paths to the Shader initialization function
 	m_result = InitializeShaders(device, hwnd, vsFilename, psFilename);
 	if (!m_result)
@@ -37,6 +47,7 @@ bool ColorShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 	return true;
+
 }
 
 bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
@@ -45,8 +56,8 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 
 	//Compile Shader from the provided path into a buffer.
 	//Compile Vertex Shader into a buffer.
-	ID3D10Blob* vertesShaderBuffer;
-	ID3D10Blob* errormessage;
+	ID3D10Blob* vertesShaderBuffer = nullptr;
+	ID3D10Blob* errormessage = nullptr;
 	t_result = D3DCompileFromFile(vsFilename, NULL, NULL, "ColorVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertesShaderBuffer, &errormessage);
 	if (FAILED(t_result))
 	{
@@ -61,8 +72,8 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 	}
 
 	//Compile Pixel Shader into a buffer
-	ID3D10Blob* pixelShaderbuffer;
-	t_result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderbuffer, &errormessage);
+	ID3D10Blob* pixelShaderbuffer = nullptr;
+	t_result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderbuffer, &errormessage);
 	if (FAILED(t_result))
 	{
 		if (errormessage)
@@ -131,6 +142,7 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 	t_result = device->CreateBuffer(&matrixbuffer_desc, NULL, &m_matrixbuffer);
 	if (FAILED(t_result))
 	{
+		std::cout << "Could not create Matrix buffer\n";
 		return false;
 	}
 	return true;
@@ -167,7 +179,7 @@ void ColorShaderClass::OutputShaderErrorMessage(ID3DBlob* errormessage, HWND hwn
 	unsigned long long buffersize,i;
 	std::ofstream f_out;
 
-	compileerrors = (char*)errormessage->GetBufferPointer();
+	compileerrors = (char*)(errormessage->GetBufferPointer());
 	buffersize = errormessage->GetBufferSize();
 	
 	f_out.open("shader_error_log.txt");
@@ -213,14 +225,20 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceconteext, 
 	deviceconteext->Unmap(m_matrixbuffer, 0);
 
 	unsigned int buffernumber = 0;
-	deviceconteext->VSSetConstantBuffers(0, 1, &m_matrixbuffer);
+	deviceconteext->VSSetConstantBuffers(buffernumber, 1, &m_matrixbuffer);
 
 	return true;
 }
 
-void ColorShaderClass::RenderShader(ID3D11DeviceContext*, int)
+void ColorShaderClass::RenderShader(ID3D11DeviceContext* devicecontext, int indexcount)
 {
+	devicecontext->IASetInputLayout(m_layout);
 
+	devicecontext->VSSetShader(m_vertexshader, NULL, 0);
+	devicecontext->PSSetShader(m_pixelshader, NULL, 0);
+
+	devicecontext->DrawIndexed(indexcount, 0, 0);
+	return;
 }
 
 void ColorShaderClass::Shutdown()

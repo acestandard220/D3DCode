@@ -1,8 +1,11 @@
 #pragma once
 #include <windows.h>
-#include "D3DClass.h"
 #include <iostream>
 
+#include "D3DClass.h"
+#include "ColorShaderClass.h"
+#include "ModelClass.h"
+#include "CameraClass.h"
 
 const bool FULL_SCREEN = false;
 const bool V_SYNC = true;
@@ -26,5 +29,8 @@ private:
 
     private:
 		D3DClass* m_d3dclass;
+		ColorShaderClass* m_colorshaderclass;
+		ModelClass* m_modelclass;
+		CameraClass* m_cameraclass;
 		bool m_result;
 };

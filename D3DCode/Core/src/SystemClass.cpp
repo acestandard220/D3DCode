@@ -188,6 +188,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT msg, WPARAM wparam,
 			return DefWindowProc(hwnd, msg, wparam, lparam);
 		}
 	}
+	return 0;
 }
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
