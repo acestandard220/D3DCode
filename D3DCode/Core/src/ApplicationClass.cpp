@@ -31,15 +31,19 @@ bool ApplicationClass::Initialize(int& screenWidth, int& screenHeight, HWND& hwn
 	if (!m_result)
 	{
 		MessageBox(hwnd, L"Could not initialize ModelClass", L"Initialization Error", MB_OK);
-		//return false;
+		return false;
 	}
 
 	m_colorshaderclass = new ColorShaderClass;
 	m_result = m_colorshaderclass->Initialize(m_d3dclass->GetDevice(), hwnd);
 	if (!m_result)
 	{
+		m_colorshaderclass->initOkay = false;
 		MessageBox(hwnd, L"Could not initialize ColorShaderClass", L"Initialization Error", MB_OK);
 		return false;
+	}
+	else {
+		m_colorshaderclass->initOkay = true;
 	}
 	
 	return true;
@@ -85,15 +89,22 @@ bool ApplicationClass::Render()
 {
 	DirectX::XMMATRIX world, view, projection;
 
-	m_d3dclass->BeginScene(0.3f, 0.4f, 0.1f, 1.0f);
+	m_d3dclass->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	
 	m_cameraclass->GetViewMatrix(view);
 	m_d3dclass->GetWorldMatrix(world);
 	m_d3dclass->GetProjectionMatrix(projection);
 
 	m_cameraclass->Render();
 	m_modelclass->Render(m_d3dclass->GetDeviceContext());
-	m_colorshaderclass->Render(m_d3dclass->GetDeviceContext(), m_modelclass->GetIndexCount(), world, view, projection);
-
+	if (m_colorshaderclass->initOkay)
+	{
+		m_colorshaderclass->Render(m_d3dclass->GetDeviceContext(), m_modelclass->GetIndexCount(), world, view, projection);
+	}
+	else {
+		MessageBox(NULL, L"ColorClass initialization failed.\n..Cannot step into render function.",L"Class initialization Error",MB_OK);
+		return false;
+	}
 
 	m_d3dclass->EndScene();
 	return true;

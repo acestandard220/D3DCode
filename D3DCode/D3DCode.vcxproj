@@ -38,8 +38,12 @@
     <ClCompile Include="Core\src\SystemClass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Core\src\color.ps" />
-    <None Include="Core\src\color.vs" />
+    <None Include="pixel.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="vertex.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

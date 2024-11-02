@@ -84,6 +84,8 @@ bool D3DClass::Initialize(int screenWidth,
 	}
     m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
 	
+	
+
 	//Describe a view for the depthStencilbuffer itself.
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilView_desc;
 	depthStencilView_desc.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -332,6 +334,10 @@ bool D3DClass::CreateSwapChain(int& screenWidth,
 		&m_device,
 		NULL,
 		&m_deviceContext);
+	if (m_deviceContext == nullptr)
+	{
+		std::cout << "The device context is null\n";
+	}
 
 
 	return true;

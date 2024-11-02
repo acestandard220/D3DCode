@@ -4,9 +4,13 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "comsuppw.lib")
+
 
 #include <d3d11.h>
 #include <directxmath.h>
+#include <iostream>
+#include <comdef.h>
 
 #define yes true;
 #define no  false
@@ -38,6 +42,7 @@ class D3DClass {
         void SetBackbufferRenderTarget();
         void ResetViewPort();
     private:
+		
         bool GetRefreshRate(int&,int&,unsigned int&, unsigned int&);
         bool CreateSwapChain(int&, int&,bool,unsigned int,unsigned int,HWND);
         bool SetUpViewPort(int&, int&);
@@ -65,9 +70,12 @@ class D3DClass {
         DirectX::XMMATRIX m_orthographicMatrix;
         DirectX::XMMATRIX m_WorldMatrix;
 
+        
         D3D11_VIEWPORT m_viewport;
         HRESULT m_result;
-
+        //TODO: Get _com_error to print out string interpretation of the HRESULT.FAILED
+    
 };
+
 
 #endif // !_D3D_CLASS_H_

@@ -3,11 +3,12 @@
 
 ColorShaderClass::ColorShaderClass()
 {
-	m_vertexshader  = nullptr;
-	m_pixelshader   = nullptr;
-	m_matrixbuffer  = nullptr;
-	m_layout        = nullptr;
+	m_vertexshader  = 0;
+	m_pixelshader = 0;
+	m_matrixbuffer = 0;
+	m_layout = 0;
 
+	initOkay = false;
 
 }
 
@@ -27,23 +28,26 @@ bool ColorShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 	wchar_t vsFilename[128];
 	wchar_t psFilename[128];
 	int err;
-	err = wcscpy_s(vsFilename, 128, L"color.vs");
+
+	err = wcscpy_s(vsFilename, 128, L"vertex.hlsl");
 
 	if (err != 0)
 	{
 		std::cout << "File path copy failed\n";
 		return false;
 	}
-	err = wcscpy_s(psFilename, 128, L"color.ps");
+	err = wcscpy_s(psFilename, 128, L"pixel.hlsl");
 	if (err != 0)
 	{
 		std::cout << "File path cop failed 2\n";
 		return false;
 	}
+	
 	//Passing the paths to the Shader initialization function
 	m_result = InitializeShaders(device, hwnd, vsFilename, psFilename);
 	if (!m_result)
 	{
+		std::cout << "Shader Initialization failed\n";
 		return false;
 	}
 	return true;
@@ -56,9 +60,10 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 
 	//Compile Shader from the provided path into a buffer.
 	//Compile Vertex Shader into a buffer.
-	ID3D10Blob* vertesShaderBuffer = nullptr;
-	ID3D10Blob* errormessage = nullptr;
-	t_result = D3DCompileFromFile(vsFilename, NULL, NULL, "ColorVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertesShaderBuffer, &errormessage);
+	ID3D10Blob* vertesShaderBuffer = 0;
+	ID3D10Blob* errormessage = 0;
+
+	t_result = D3DCompileFromFile(vsFilename,NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertesShaderBuffer, &errormessage);
 	if (FAILED(t_result))
 	{
 		if (errormessage)
@@ -72,8 +77,8 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 	}
 
 	//Compile Pixel Shader into a buffer
-	ID3D10Blob* pixelShaderbuffer = nullptr;
-	t_result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderbuffer, &errormessage);
+	ID3D10Blob* pixelShaderbuffer = 0;
+	t_result = D3DCompileFromFile(psFilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS , 0, &pixelShaderbuffer, &errormessage);
 	if (FAILED(t_result))
 	{
 		if (errormessage)
@@ -101,7 +106,7 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;
-	polygonlayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonlayout[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonlayout[0].InputSlot = 0;
 	polygonlayout[0].AlignedByteOffset = 0;
 	polygonlayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -109,7 +114,7 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 
 	polygonlayout[1].SemanticName = "COLOR";
 	polygonlayout[1].SemanticIndex = 0;
-	polygonlayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonlayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonlayout[1].InputSlot = 0;
 	polygonlayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -145,8 +150,14 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 		std::cout << "Could not create Matrix buffer\n";
 		return false;
 	}
+	if (!m_matrixbuffer)
+	{
+		std::cout << "The matrix buffer is null\n...Please refer to the buffer creation\n";
+		return false;
+	}
 	return true;
 }
+ 
 
 void ColorShaderClass::ShutdownShaders()
 {
@@ -209,6 +220,7 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceconteext, 
 	//This structure describes the memory mapping of a buffer
 	//Use this buffer to set the values of the buffer as it contains an actual pointer to the data of the buffer
 	D3D11_MAPPED_SUBRESOURCE mappedresource;
+
 	deviceconteext->Map(m_matrixbuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 
 	//Create a pointer of the type you won't to fill into the shader
