@@ -106,7 +106,7 @@ bool ColorShaderClass::InitializeShaders(ID3D11Device* device, HWND hwnd, WCHAR*
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;
-	polygonlayout[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonlayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	polygonlayout[0].InputSlot = 0;
 	polygonlayout[0].AlignedByteOffset = 0;
 	polygonlayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -210,12 +210,12 @@ void ColorShaderClass::OutputShaderErrorMessage(ID3DBlob* errormessage, HWND hwn
 	return;
 }
 
-bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceconteext, DirectX::XMMATRIX world, DirectX::XMMATRIX view, DirectX::XMMATRIX projection)
+bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceconteext, DirectX::XMMATRIX worldm, DirectX::XMMATRIX viewm, DirectX::XMMATRIX projectionm)
 {
 
-	world = DirectX::XMMatrixTranspose(world);
-	view = DirectX::XMMatrixTranspose(view);
-	projection = DirectX::XMMatrixTranspose(projection);
+	worldm = DirectX::XMMatrixTranspose(worldm);
+	viewm = DirectX::XMMatrixTranspose(viewm);
+	projectionm = DirectX::XMMatrixTranspose(projectionm);
 
 	//This structure describes the memory mapping of a buffer
 	//Use this buffer to set the values of the buffer as it contains an actual pointer to the data of the buffer
@@ -230,9 +230,9 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceconteext, 
 
 	//Since when creating the buffer we gave it the same size as that of what the pointer is to point to 
 	//perform pointer arithmetic on the buffer is fine
-	dataptr->world = world;
-	dataptr->view = view;
-	dataptr->projection = projection;
+	dataptr->world = worldm;
+	dataptr->view = viewm;
+	dataptr->projection = projectionm;
 
 	deviceconteext->Unmap(m_matrixbuffer, 0);
 

@@ -158,7 +158,7 @@ bool ModelClass::RenderBuffers(ID3D11DeviceContext* devicecontext)
 	unsigned int offset;
 	unsigned int stride;
 
-	stride = sizeof(VertexType) * m_vertexbuffercount;
+	stride = sizeof(VertexType);
 	offset = 0;
 
 	//Set the vertex buffer as the active vertex buffer to be used at this point
